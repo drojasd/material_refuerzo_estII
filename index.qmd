@@ -1,0 +1,404 @@
+---
+title: "Laboratorio Parcial 1: Distribuciones y Formas"
+lang: es
+---
+
+```{=html}
+<div class="lab-shell">
+  <header class="lab-header">
+    <div class="header-grid">
+      <div>
+        <p class="eyebrow">Estadística II para Ciencias Políticas y Diseño Urbano</p>
+        <h1>Laboratorio Parcial 1: Distribuciones y Formas</h1>
+        <p class="lead">Un recorrido de recuperación conceptual para volver a mirar el parcial desde las formas: masa, área, centro, dispersión, asimetría e independencia.</p>
+      </div>
+      <aside class="status-panel" aria-label="Progreso de autoevaluación">
+        <p class="status-title">Perfil de repaso</p>
+        <div class="meter" aria-hidden="true"><div class="meter-fill" id="scoreFill"></div></div>
+        <div class="score-line"><span id="scoreCount">0/0</span><span id="answeredCount">0 respondidas</span></div>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="lab-nav" aria-label="Secciones del laboratorio">
+    <a href="#diagnostico">Diagnóstico</a>
+    <a href="#modelacion">Modelación</a>
+    <a href="#validez">Validez</a>
+    <a href="#formas">Formas</a>
+    <a href="#areas">Áreas</a>
+    <a href="#independencia">Independencia</a>
+    <a href="#cierre">Cierre</a>
+  </nav>
+
+  <main>
+    <section class="module" id="diagnostico">
+      <div class="module-title"><span>01</span><h2>Diagnóstico Inicial</h2></div>
+      <p class="module-intro">Ocho preguntas rápidas para localizar las ideas que más conviene reparar antes de volver a calcular.</p>
+      <div class="quiz-grid">
+        <article class="quiz-card" data-question="d1" data-answer="b" data-ok="Correcto: una variable aleatoria traduce resultados posibles a números." data-hint="Revisa la regla X: Ω -> R. No es solo una lista de resultados.">
+          <p class="question">¿Qué representa una variable aleatoria?</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d1" value="a">Un resultado observado sin transformación.</label>
+            <label class="option"><input type="radio" name="d1" value="b">Una función que asigna números a resultados de Ω.</label>
+            <label class="option"><input type="radio" name="d1" value="c">Una probabilidad que siempre vale entre 0 y 1.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d2" data-answer="c" data-ok="Bien: en una continua, la probabilidad está en el área de intervalos." data-hint="En variables continuas, la altura sola no es una probabilidad puntual.">
+          <p class="question">En una densidad continua, ¿dónde vive la probabilidad?</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d2" value="a">En la altura exacta f(x).</label>
+            <label class="option"><input type="radio" name="d2" value="b">En el valor puntual P(X = x).</label>
+            <label class="option"><input type="radio" name="d2" value="c">En el área bajo la curva sobre un intervalo.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d3" data-answer="a" data-ok="Exacto: una masa discreta válida suma 1 y no tiene probabilidades negativas." data-hint="Para una masa discreta se suman alturas; para una continua se integra área.">
+          <p class="question">Una función de masa discreta válida debe cumplir:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d3" value="a">Todas sus probabilidades son no negativas y suman 1.</label>
+            <label class="option"><input type="radio" name="d3" value="b">Todas sus barras tienen la misma altura.</label>
+            <label class="option"><input type="radio" name="d3" value="c">La media coincide con la moda.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d4" data-answer="b" data-ok="Correcto: la varianza mide dispersión alrededor del centro." data-hint="La varianza no ubica el centro; mide cuánto se alejan los valores de él.">
+          <p class="question">Si dos distribuciones tienen la misma media, la mayor varianza indica:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d4" value="a">Mayor probabilidad exactamente en la media.</label>
+            <label class="option"><input type="radio" name="d4" value="b">Mayor dispersión e incertidumbre alrededor de la media.</label>
+            <label class="option"><input type="radio" name="d4" value="c">Independencia entre eventos.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d5" data-answer="c" data-ok="Bien visto: la moda está donde la densidad o masa alcanza su máximo." data-hint="La moda no tiene que coincidir con el promedio, especialmente en formas asimétricas.">
+          <p class="question">La moda de una distribución es:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d5" value="a">El área total bajo la curva.</label>
+            <label class="option"><input type="radio" name="d5" value="b">El valor que deja 50% a cada lado.</label>
+            <label class="option"><input type="radio" name="d5" value="c">El valor o zona más probable según la forma.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d6" data-answer="a" data-ok="Correcto: independencia significa que saber B no cambia la probabilidad de A." data-hint="No confundas independencia con que los eventos no se crucen.">
+          <p class="question">A y B son independientes cuando:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d6" value="a">P(A | B) = P(A).</label>
+            <label class="option"><input type="radio" name="d6" value="b">A y B no tienen intersección.</label>
+            <label class="option"><input type="radio" name="d6" value="c">P(A) = P(B).</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d7" data-answer="b" data-ok="Sí: la asimetría positiva alarga la cola hacia valores altos." data-hint="Mira hacia dónde se extiende la cola, no dónde está la mayor altura.">
+          <p class="question">Una distribución con asimetría positiva tiene:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d7" value="a">Cola larga hacia la izquierda.</label>
+            <label class="option"><input type="radio" name="d7" value="b">Cola larga hacia la derecha.</label>
+            <label class="option"><input type="radio" name="d7" value="c">Siempre forma perfectamente simétrica.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+
+        <article class="quiz-card" data-question="d8" data-answer="c" data-ok="Correcto: normalizar es ajustar una forma para que su área total sea 1." data-hint="La constante no cambia el soporte; cambia la escala vertical de la función.">
+          <p class="question">La constante de normalización en una densidad sirve para:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="d8" value="a">Hacer que la media siempre sea 0.</label>
+            <label class="option"><input type="radio" name="d8" value="b">Eliminar la asimetría.</label>
+            <label class="option"><input type="radio" name="d8" value="c">Lograr que el área total bajo la curva sea 1.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="modelacion">
+      <div class="module-title"><span>02</span><h2>Del Fenómeno a la Variable Aleatoria</h2></div>
+      <p class="module-intro">Antes de hablar de distribuciones, el fenómeno debe convertirse en experimento, espacio muestral y regla numérica.</p>
+      <div class="concept-strip">
+        <div class="concept"><strong>Experimento aleatorio</strong>Observar un proceso cuyo resultado específico no se conoce antes de medirlo: una encuesta, un trayecto, una asignación presupuestal.</div>
+        <div class="concept"><strong>Espacio muestral Ω</strong>Conjunto de resultados posibles bajo una definición clara del experimento.</div>
+        <div class="concept"><strong>Variable X: Ω -> R</strong>Regla que traduce esos resultados a números comparables, graficables y analizables.</div>
+      </div>
+      <div class="grid">
+        <article class="quiz-card" data-question="m1" data-answer="a" data-ok="Bien: el resultado cualitativo se traduce a una escala numérica." data-hint="Piensa en cuál opción define una regla de asignación para cada resultado posible.">
+          <p class="question">En una consulta ciudadana con respuestas {rechaza, neutral, apoya}, una buena X sería:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="m1" value="a">X(rechaza)=0, X(neutral)=1, X(apoya)=2.</label>
+            <label class="option"><input type="radio" name="m1" value="b">X = 0.62 porque 62% apoya.</label>
+            <label class="option"><input type="radio" name="m1" value="c">X = una política urbana.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-question="m2" data-answer="b" data-ok="Correcto: el clima puede afectar la variabilidad, pero no define el experimento." data-hint="Separa lo estructural de lo contextual: una condición B influye sin ser la regla del experimento.">
+          <p class="question">Medir ruido urbano durante una hora. ¿Cuál es una condición experimental B?</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="m2" value="a">La variable se mide en decibeles.</label>
+            <label class="option"><input type="radio" name="m2" value="b">Lluvia, obras cercanas o flujo vehicular inusual.</label>
+            <label class="option"><input type="radio" name="m2" value="c">El espacio muestral existe.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="validez">
+      <div class="module-title"><span>03</span><h2>Densidad o Masa Válida</h2></div>
+      <p class="module-intro">Una forma bonita no basta. Debe respetar no negatividad y probabilidad total igual a 1.</p>
+      <div class="grid">
+        <article class="panel">
+          <h3>Densidad triangular continua</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="triBase">Base <span id="triBaseValue">4.0</span></label>
+              <input id="triBase" type="range" min="1" max="8" step="0.1" value="4">
+            </div>
+            <div class="control-row">
+              <label for="triHeight">Altura <span id="triHeightValue">0.50</span></label>
+              <input id="triHeight" type="range" min="0.05" max="1.5" step="0.01" value="0.5">
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Área</b><span id="triArea">1.000</span></div>
+            <div class="metric"><b>Estado</b><span id="triValidity">válida</span></div>
+            <div class="metric"><b>Altura para área 1</b><span id="triFix">0.500</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <svg class="chart" id="triangleChart" role="img" aria-label="Triángulo de densidad con área calculada"></svg>
+        </article>
+      </div>
+      <div class="grid">
+        <article class="panel" data-question="v1" data-numeric-answer="1" data-tolerance="0.001" data-ok="Correcto: base por altura dividido entre dos da 1." data-hint="Usa área = base × altura / 2. Con base 4 y altura 0.5, revisa la multiplicación antes de dividir.">
+          <h3>Chequeo numérico</h3>
+          <p>Con base 4 y altura 0.5, el área total es:</p>
+          <input type="number" step="0.001" aria-label="Área de triángulo">
+          <button type="button">Verificar</button>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-question="v2" data-answer="b" data-ok="Exacto: si el área total es 1.4, hay demasiada probabilidad asignada." data-hint="La probabilidad total de todo Ω debe ser exactamente 1.">
+          <p class="question">Si una densidad continua tiene área total 1.4, entonces:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="v2" value="a">Es válida porque no es negativa.</label>
+            <label class="option"><input type="radio" name="v2" value="b">No es válida porque la probabilidad total excede 1.</label>
+            <label class="option"><input type="radio" name="v2" value="c">Es válida solo si la media es 0.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+
+      <div class="grid">
+        <article class="panel">
+          <h3>Masa discreta por distritos</h3>
+          <div class="bars-grid" aria-label="Probabilidades por distrito">
+            <label class="bar-control">D1 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.10"></label>
+            <label class="bar-control">D2 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.15"></label>
+            <label class="bar-control">D3 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.20"></label>
+            <label class="bar-control">D4 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.05"></label>
+            <label class="bar-control">D5 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.15"></label>
+            <label class="bar-control">D6 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.10"></label>
+            <label class="bar-control">D7 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.15"></label>
+            <label class="bar-control">D8 <input class="prob-input" type="number" min="0" max="1" step="0.01" value="0.10"></label>
+          </div>
+          <button class="secondary" id="resetMass" type="button">Restaurar tabla base</button>
+          <div class="metric-row">
+            <div class="metric"><b>Suma</b><span id="massTotal">1.000</span></div>
+            <div class="metric"><b>Estado</b><span id="massValidity">válida</span></div>
+            <div class="metric"><b>Regla</b><span>Σp(x)=1</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <svg class="chart" id="barChart" role="img" aria-label="Barras de probabilidad discreta"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="formas">
+      <div class="module-title"><span>04</span><h2>Centro, Dispersión y Asimetría</h2></div>
+      <p class="module-intro">Dos políticas pueden tener el mismo promedio y aun así sentirse muy distintas para quienes viven sus consecuencias.</p>
+      <div class="grid">
+        <article class="panel">
+          <h3>Movilidad: mismo promedio, distinta experiencia</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="spread">Dispersión BRT <span id="spreadValue">7.0</span></label>
+              <input id="spread" type="range" min="4" max="12" step="0.5" value="7">
+            </div>
+            <div class="control-row">
+              <label for="skew">Cola derecha BRT <span id="skewValue">2.5</span></label>
+              <input id="skew" type="range" min="0" max="5" step="0.5" value="2.5">
+            </div>
+          </div>
+          <div class="callout">La media compartida está en 25 minutos. La pregunta urbana no es solo “cuánto tarda en promedio”, sino cuánta incertidumbre y cuántos retrasos extremos aparecen alrededor de ese promedio.</div>
+        </article>
+        <article class="panel">
+          <svg class="chart" id="shapeChart" role="img" aria-label="Comparador de formas con la misma media"></svg>
+        </article>
+      </div>
+      <div class="quiz-grid">
+        <article class="quiz-card" data-question="f1" data-answer="b" data-ok="Correcto: menor varianza implica tiempos más predecibles alrededor del promedio." data-hint="La predictibilidad se relaciona con menor dispersión, no solo con menor media.">
+          <p class="question">Si BRT y Metro tienen media 25, pero Metro tiene menor varianza, ¿cuál es más predecible?</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="f1" value="a">BRT, porque tiene más casos extremos.</label>
+            <label class="option"><input type="radio" name="f1" value="b">Metro, porque concentra más tiempos cerca de 25.</label>
+            <label class="option"><input type="radio" name="f1" value="c">Ninguno: la varianza no importa.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-question="f2" data-answer="a" data-ok="Bien: una cola derecha sugiere retrasos inusualmente altos." data-hint="Asimetría positiva equivale a cola hacia valores grandes.">
+          <p class="question">En tiempos de viaje, una cola derecha larga advierte sobre:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="f2" value="a">Riesgo de viajes mucho más largos que la media.</label>
+            <label class="option"><input type="radio" name="f2" value="b">Imposibilidad de calcular probabilidades.</label>
+            <label class="option"><input type="radio" name="f2" value="c">Una masa discreta automáticamente válida.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="areas">
+      <div class="module-title"><span>05</span><h2>Probabilidades Como Áreas</h2></div>
+      <p class="module-intro">La altura orienta la forma; el área decide la probabilidad.</p>
+      <div class="grid">
+        <article class="panel">
+          <h3>Polarización proporcional a |x|</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="vLimit">Extremo a <span id="vLimitValue">3.0</span></label>
+              <input id="vLimit" type="range" min="2" max="5" step="0.1" value="3">
+            </div>
+            <div class="control-row">
+              <label for="vConstant">Constante c <span id="vConstantValue">0.111</span></label>
+              <input id="vConstant" type="range" min="0.02" max="0.25" step="0.001" value="0.111">
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Área c·a²</b><span id="vArea">1.000</span></div>
+            <div class="metric"><b>c correcta</b><span id="vCorrectC">0.111</span></div>
+            <div class="metric"><b>Esperanza</b><span id="vMean">0</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <svg class="chart" id="vChart" role="img" aria-label="Densidad proporcional a valor absoluto"></svg>
+        </article>
+      </div>
+      <div class="quiz-grid">
+        <article class="panel" data-question="a1" data-numeric-answer="0.111" data-tolerance="0.002" data-ok="Correcto: para [-3,3], el área de |x| es 9, así que c = 1/9." data-hint="Integra |x| en [-a,a]: el área total es a². Con a=3, despeja c·9=1.">
+          <h3>Constante de normalización</h3>
+          <p>Para f(x)=c|x| en [-3,3], c es aproximadamente:</p>
+          <input type="number" step="0.001" aria-label="Constante c">
+          <button type="button">Verificar</button>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-question="a2" data-answer="c" data-ok="Exacto: la media está en el centro por simetría, pero la densidad allí es mínima." data-hint="Distingue centro de masa y punto de mayor altura. En |x| el centro es el valle.">
+          <p class="question">En la densidad proporcional a |x|, apostar al valor exacto de la media es problemático porque:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="a2" value="a">La media no existe.</label>
+            <label class="option"><input type="radio" name="a2" value="b">La función toma valores negativos.</label>
+            <label class="option"><input type="radio" name="a2" value="c">La media coincide con el punto de menor densidad.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+
+      <div class="grid">
+        <article class="panel">
+          <h3>Respuesta adicional de emergencias</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="leftHeight">Altura izquierda g(0-) <span id="leftHeightValue">2.0</span></label>
+              <input id="leftHeight" type="range" min="0.5" max="3.5" step="0.1" value="2">
+            </div>
+            <div class="control-row">
+              <label for="rightHeight">Altura derecha g(0) <span id="rightHeightValue">3.0</span></label>
+              <input id="rightHeight" type="range" min="0.5" max="3.5" step="0.1" value="3">
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Área de g</b><span id="rawArea">6.500</span></div>
+            <div class="metric"><b>k = 1/área</b><span id="kValue">0.154</span></div>
+            <div class="metric"><b>P(0 ≤ X ≤ 3)</b><span id="rightProb">0.692</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <svg class="chart" id="pieceChart" role="img" aria-label="Densidad triangular por tramos"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="independencia">
+      <div class="module-title"><span>06</span><h2>Condicional e Independencia</h2></div>
+      <p class="module-intro">La pregunta clave: ¿saber que ocurrió un evento cambia la probabilidad del otro?</p>
+      <div class="grid">
+        <article class="panel">
+          <h3>Eventos sobre la tabla de distritos</h3>
+          <select id="eventPair" aria-label="Par de eventos">
+            <option value="AB">A: distrito par | B: distrito norte</option>
+            <option value="AC">A: distrito par | C: distrito prioritario</option>
+            <option value="DE">D: distritos 1 a 4 | E: distritos 1 o 2</option>
+          </select>
+          <div class="metric-row">
+            <div class="metric"><b>P(1er evento)</b><span id="pFirst">0.400</span></div>
+            <div class="metric"><b>P(2do evento)</b><span id="pSecond">0.500</span></div>
+            <div class="metric"><b>P(intersección)</b><span id="pIntersection">0.200</span></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>P(1er | 2do)</b><span id="pConditional">0.400</span></div>
+            <div class="metric"><b>Conclusión</b><span id="independenceResult">independientes</span></div>
+            <div class="metric"><b>Par</b><span id="eventPairLabel">A par y B norte</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <svg class="chart" id="vennChart" role="img" aria-label="Diagrama esquemático de eventos en omega"></svg>
+        </article>
+      </div>
+      <div class="quiz-grid">
+        <article class="quiz-card" data-question="i1" data-answer="b" data-ok="Correcto: si P(A|B)=P(A), saber B no modifica la probabilidad de A." data-hint="Compara la probabilidad condicional con la marginal del primer evento.">
+          <p class="question">Con la tabla base, A=par y B=norte dan P(A)=0.40 y P(A|B)=0.40. Entonces:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="i1" value="a">Son disjuntos.</label>
+            <label class="option"><input type="radio" name="i1" value="b">Son independientes.</label>
+            <label class="option"><input type="radio" name="i1" value="c">Son imposibles.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-question="i2" data-answer="a" data-ok="Exacto: disyunción con probabilidades positivas produce dependencia, no independencia." data-hint="Si dos eventos positivos no se cruzan, saber que ocurrió uno hace imposible el otro.">
+          <p class="question">Dos intervenciones urbanas mutuamente excluyentes, ambas con probabilidad positiva, son:</p>
+          <div class="options">
+            <label class="option"><input type="radio" name="i2" value="a">Dependientes.</label>
+            <label class="option"><input type="radio" name="i2" value="b">Independientes por no cruzarse.</label>
+            <label class="option"><input type="radio" name="i2" value="c">Continuas.</label>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="cierre">
+      <div class="module-title"><span>07</span><h2>Cierre</h2></div>
+      <div class="profile-box">
+        <div>
+          <h3>Resultado local</h3>
+          <p id="profileText">Responde varias preguntas y revisa las simulaciones para obtener un perfil útil.</p>
+        </div>
+        <div class="profile-label" id="profileLabel">En construcción</div>
+      </div>
+      <div class="callout"><strong>Mapa mental mínimo:</strong> define Ω, construye X, revisa si la función es válida, interpreta la forma, calcula áreas o sumas, y solo al final decide independencia con una comparación condicional.</div>
+      <ul class="checklist">
+        <li>No confundir altura de una densidad continua con probabilidad puntual.</li>
+        <li>No asumir que la media es el valor más probable.</li>
+        <li>No aceptar una forma como distribución si su área o suma total no es 1.</li>
+        <li>No confundir eventos disjuntos con eventos independientes.</li>
+        <li>No calcular antes de declarar experimento, Ω, X y condiciones relevantes.</li>
+      </ul>
+      <p class="footer-note">Este laboratorio no envía respuestas ni guarda resultados. La retroalimentación existe solo durante esta sesión del navegador.</p>
+    </section>
+  </main>
+</div>
+```

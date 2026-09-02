@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+  resources:
+    - lab.js
+    - data.js
+    - .nojekyll
+
+website:
+  title: "Laboratorio Parcial 1"
+  page-navigation: true
+  navbar: false
+  search: false
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-location: right
+    embed-resources: false
+    include-after-body:
+      - text: |
+          <script src="data.js"></script>
+          <script src="lab.js"></script>
