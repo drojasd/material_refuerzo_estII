@@ -2,6 +2,8 @@
 
 Laboratorio HTML estático para recuperación conceptual después del primer parcial de Estadística II.
 
+URL pública para estudiantes: <https://drojasd.github.io/material_refuerzo_estII/>
+
 ## Entregables
 
 - `index.qmd`: fuente Quarto del laboratorio.
