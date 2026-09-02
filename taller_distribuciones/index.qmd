@@ -1,0 +1,199 @@
+---
+title: "Taller: Distribuciones Comunes"
+lang: es
+format:
+  html:
+    include-after-body:
+      - text: |
+          <script src="../workshop-data.js"></script>
+          <script src="../distributions-engine.js"></script>
+          <script src="../taller_distribuciones.js"></script>
+---
+
+```{=html}
+<div class="lab-shell" id="distributionWorkshop">
+  <header class="lab-header">
+    <div class="header-grid">
+      <div>
+        <p class="eyebrow">Estadística II para Ciencias Políticas y Diseño Urbano</p>
+        <h1>Taller: Distribuciones Comunes</h1>
+        <p class="lead">Una guía visual para reconocer familias de distribución por su forma, su soporte y el tipo de pregunta que responden.</p>
+        <div class="site-links">
+          <a href="../">Laboratorio Parcial 1</a>
+          <a href="../taller_estimadores/">Taller de estimadores</a>
+        </div>
+      </div>
+      <aside class="status-panel">
+        <p class="status-title">Ruta sugerida</p>
+        <p class="mini-note">Primero mira la forma. Luego pregunta: ¿es conteo, proporción, medición, tiempo o evento binario?</p>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="lab-nav" aria-label="Secciones del taller">
+    <a href="#mapa">Mapa</a>
+    <a href="#formas">Parámetros</a>
+    <a href="#cdf">PDF/PMF -> CDF</a>
+    <a href="#situaciones">Situaciones</a>
+    <a href="#cierre">Cierre</a>
+  </nav>
+
+  <main>
+    <section class="module" id="mapa">
+      <div class="module-title"><span>01</span><h2>Mapa de Familias</h2></div>
+      <p class="module-intro">Las distribuciones no son una lista para memorizar: son respuestas típicas a formas distintas de incertidumbre.</p>
+      <div class="dist-gallery">
+        <article class="dist-card">
+          <strong>Bernoulli</strong>
+          <div class="tag-row"><span class="tag">discreta</span><span class="tag">0/1</span></div>
+          <p>Una sola decisión binaria: éxito/fracaso, sí/no, adopta/no adopta.</p>
+          <p class="mini-note">Ejemplo: un hogar apoya una política de movilidad.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Binomial</strong>
+          <div class="tag-row"><span class="tag">discreta</span><span class="tag">n ensayos</span></div>
+          <p>Cuenta cuántos éxitos aparecen en un número fijo de ensayos independientes.</p>
+          <p class="mini-note">Ejemplo: cuántos de 30 hogares adoptan una medida.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Poisson</strong>
+          <div class="tag-row"><span class="tag">discreta</span><span class="tag">conteo</span></div>
+          <p>Cuenta ocurrencias en un intervalo de tiempo, espacio, área o volumen.</p>
+          <p class="mini-note">Ejemplo: reportes de ruido por noche en un barrio.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Geométrica</strong>
+          <div class="tag-row"><span class="tag">discreta</span><span class="tag">espera</span></div>
+          <p>Cuenta cuántos intentos se requieren hasta observar el primer éxito.</p>
+          <p class="mini-note">Ejemplo: primera respuesta positiva en llamadas de campo.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Uniforme</strong>
+          <div class="tag-row"><span class="tag">discreta/continua</span><span class="tag">plana</span></div>
+          <p>Todos los resultados del soporte tienen la misma oportunidad o densidad.</p>
+          <p class="mini-note">Ejemplo: sorteo equiprobable o incertidumbre entre dos límites.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Normal</strong>
+          <div class="tag-row"><span class="tag">continua</span><span class="tag">simétrica</span></div>
+          <p>Forma de campana: centro claro, colas equilibradas y dispersión controlada por sigma.</p>
+          <p class="mini-note">Ejemplo: errores de medición o promedios de muchas fuentes.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Beta</strong>
+          <div class="tag-row"><span class="tag">continua</span><span class="tag">0 a 1</span></div>
+          <p>Modela proporciones y puede tomar formas crecientes, decrecientes, simétricas o en U.</p>
+          <p class="mini-note">Ejemplo: proporción de viajes en bicicleta por distrito.</p>
+        </article>
+        <article class="dist-card">
+          <strong>Gamma, Exponencial y Weibull</strong>
+          <div class="tag-row"><span class="tag">continua</span><span class="tag">tiempo positivo</span></div>
+          <p>Sirven para duraciones, esperas, fallas o riesgos que viven en valores positivos.</p>
+          <p class="mini-note">Ejemplo: tiempo hasta reparación de una vía.</p>
+        </article>
+      </div>
+      <div class="callout">
+        La t de Student aparece cuando trabajamos con promedios e incertidumbre adicional por estimar la desviación estándar con pocos datos.
+      </div>
+    </section>
+
+    <section class="module" id="formas">
+      <div class="module-title"><span>02</span><h2>Laboratorio de Parámetros</h2></div>
+      <p class="module-intro">Mueve los parámetros y mira qué cambia: centro, dispersión, asimetría, colas y concentración.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Elige una distribución</h3>
+          <select id="shapeSelect" aria-label="Distribución para explorar"></select>
+          <div class="parameter-grid" id="shapeParams"></div>
+          <div class="metric-row">
+            <div class="metric"><b>Soporte</b><span id="shapeSupport">-</span></div>
+            <div class="metric"><b>Media</b><span id="shapeMean">-</span></div>
+            <div class="metric"><b>Varianza</b><span id="shapeVar">-</span></div>
+          </div>
+          <p class="mini-note"><strong id="shapeName">Distribución</strong>: <span id="shapeUse"></span></p>
+        </article>
+        <article class="panel">
+          <h3>Forma resultante</h3>
+          <svg class="chart wide-chart" id="shapePlot" role="img" aria-label="Forma de la distribución seleccionada"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="cdf">
+      <div class="module-title"><span>03</span><h2>Cómo Se Construye la Función de Distribución</h2></div>
+      <p class="module-intro">La CDF acumula toda la probabilidad que queda a la izquierda de la línea vertical.</p>
+      <div class="panel">
+        <div class="grid">
+          <div>
+            <h3>Distribución base</h3>
+            <select id="cdfSelect" aria-label="Distribución para construir acumulada"></select>
+            <div class="parameter-grid" id="cdfParams"></div>
+            <div class="control-row">
+              <label for="cdfX">Mover la línea vertical <span id="cdfValue">x = -</span></label>
+              <input id="cdfX" type="range" min="0" max="1" step="0.01" value="0">
+            </div>
+          </div>
+          <div class="callout">
+            Para una distribución discreta, la acumulada sube en escalones. Para una continua, la acumulada crece suavemente porque acumula área.
+          </div>
+        </div>
+        <div class="plot-pair">
+          <div>
+            <h3>Densidad o masa</h3>
+            <svg class="chart wide-chart" id="cdfPdfPlot" role="img" aria-label="Densidad o masa con línea vertical"></svg>
+          </div>
+          <div>
+            <h3>Función acumulada F(x)</h3>
+            <svg class="chart wide-chart" id="cdfPlot" role="img" aria-label="Función de distribución acumulada"></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="module" id="situaciones">
+      <div class="module-title"><span>04</span><h2>Escoge la Familia Adecuada</h2></div>
+      <p class="module-intro">No busques primero la fórmula. Decide qué tipo de variable estás modelando.</p>
+      <div class="grid three">
+        <article class="quiz-card" data-scenario-answer="poisson" data-ok="Correcto: se cuentan ocurrencias en un intervalo de tiempo/lugar." data-hint="Piensa si hay un número fijo de ensayos o si más bien se cuentan eventos en un intervalo.">
+          <p class="question">El número de quejas por ruido recibidas por una alcaldía local durante una noche.</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="binomial">Binomial</button>
+            <button class="choice-button" data-choice="poisson">Poisson</button>
+            <button class="choice-button" data-choice="beta">Beta</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-scenario-answer="beta" data-ok="Correcto: una proporción vive entre 0 y 1 y puede tener muchas formas." data-hint="La variable no es un conteo bruto ni un tiempo: es una fracción del total.">
+          <p class="question">La proporción de viajes diarios de un distrito que se hacen en bicicleta.</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="beta">Beta</button>
+            <button class="choice-button" data-choice="geometric">Geométrica</button>
+            <button class="choice-button" data-choice="normal">Normal</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-scenario-answer="binomial" data-ok="Correcto: hay n hogares y cada uno produce éxito o fracaso." data-hint="Fíjate en el número fijo de hogares encuestados y en dos posibles respuestas por hogar.">
+          <p class="question">De 40 hogares encuestados, cuántos apoyan ampliar una ciclorruta.</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="binomial">Binomial</button>
+            <button class="choice-button" data-choice="uniform">Uniforme</button>
+            <button class="choice-button" data-choice="weibull">Weibull</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="cierre">
+      <div class="module-title"><span>05</span><h2>Checklist de Reconocimiento</h2></div>
+      <ul class="checklist">
+        <li><strong>Tipo:</strong> ¿la variable es discreta, continua, proporción, tiempo o evento binario?</li>
+        <li><strong>Soporte:</strong> ¿puede ser negativa?, ¿vive entre 0 y 1?, ¿solo toma enteros?</li>
+        <li><strong>Forma:</strong> ¿es simétrica, sesgada, plana, con cola pesada o concentrada cerca de cero?</li>
+        <li><strong>Generación:</strong> ¿surge de ensayos independientes, conteos por intervalo, espera hasta evento o medición acumulada?</li>
+      </ul>
+      <p class="footer-note">Fuentes conceptuales: diapositivas anotadas de distribuciones del curso y notas del capítulo sobre densidades, variables aleatorias y parámetros.</p>
+    </section>
+  </main>
+</div>
+```

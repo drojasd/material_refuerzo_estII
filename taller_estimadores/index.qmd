@@ -1,0 +1,161 @@
+---
+title: "Taller: Estimadores e Intervalos"
+lang: es
+format:
+  html:
+    include-after-body:
+      - text: |
+          <script src="../workshop-data.js"></script>
+          <script src="../distributions-engine.js"></script>
+          <script src="../taller_estimadores.js"></script>
+---
+
+```{=html}
+<div class="lab-shell" id="estimatorsWorkshop">
+  <header class="lab-header">
+    <div class="header-grid">
+      <div>
+        <p class="eyebrow">Estadística II para Ciencias Políticas y Diseño Urbano</p>
+        <h1>Taller: Estimadores, TLC e Intervalos</h1>
+        <p class="lead">Simula muestras, observa el estimador promedio y conecta la distribución de X̄ con intervalos de confianza y decisiones estadísticas.</p>
+        <div class="site-links">
+          <a href="../">Laboratorio Parcial 1</a>
+          <a href="../taller_distribuciones/">Taller de distribuciones</a>
+        </div>
+      </div>
+      <aside class="status-panel">
+        <p class="status-title">Idea central</p>
+        <p class="mini-note">El dato cambia. La media muestral también cambia. La distribución del estimador describe ese cambio.</p>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="lab-nav" aria-label="Secciones del taller">
+    <a href="#simulador">Simulador</a>
+    <a href="#muchas">Muchas muestras</a>
+    <a href="#estandarizacion">Estandarización</a>
+    <a href="#dianas">Exactitud</a>
+    <a href="#hipotesis">Hipótesis</a>
+    <a href="#cierre">Cierre</a>
+  </nav>
+
+  <main>
+    <section class="module" id="simulador">
+      <div class="module-title"><span>01</span><h2>De la Población al Estimador</h2></div>
+      <p class="module-intro">Una muestra aleatoria simple es un vector de mediciones independientes. El promedio muestral toma ese vector y lo convierte en un número.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Diseña la población y toma una muestra</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="estDist">Distribución poblacional</label>
+              <select id="estDist"></select>
+            </div>
+            <div class="parameter-grid" id="estParams"></div>
+            <div class="control-row">
+              <label for="sampleN">Tamaño muestral n <span id="sampleNValue">25</span></label>
+              <input id="sampleN" type="range" min="3" max="200" step="1" value="25">
+            </div>
+            <label class="option"><input type="checkbox" id="knownSigma" checked> Tratar sigma poblacional como conocida para el intervalo normal</label>
+            <button id="generateSample">Generar mediciones</button>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>mu real</b><span id="metricMu">-</span></div>
+            <div class="metric"><b>Var[X]</b><span id="metricVar">-</span></div>
+            <div class="metric"><b>xbar</b><span id="metricXbar">-</span></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Error estándar</b><span id="metricSe">-</span></div>
+            <div class="metric"><b>IC 95%</b><span id="metricCi">-</span></div>
+            <div class="metric"><b>Cobertura</b><span id="metricCovers">-</span></div>
+          </div>
+          <p class="mini-note">Valor crítico usado: <span class="formula-chip" id="metricCrit">-</span></p>
+        </article>
+        <article class="panel">
+          <h3>Población y datos observados</h3>
+          <svg class="chart wide-chart" id="populationPlot" role="img" aria-label="Distribución poblacional con muestra observada"></svg>
+        </article>
+      </div>
+      <article class="panel">
+        <h3>Distribución del promedio muestral</h3>
+        <svg class="chart wide-chart" id="estimatorPlot" role="img" aria-label="Distribución del promedio con intervalo de confianza"></svg>
+        <p class="mini-note">Bajo el Teorema del Límite Central, para varianza finita: X̄ se aproxima por una normal con media mu y varianza sigma²/n. Al estimar sigma con s, usamos t de Student.</p>
+      </article>
+    </section>
+
+    <section class="module" id="muchas">
+      <div class="module-title"><span>02</span><h2>Muchas Muestras, Muchos Promedios</h2></div>
+      <p class="module-intro">Una sola muestra produce una estimación puntual. Repetir el experimento deja ver la distribución del estimador.</p>
+      <div class="panel">
+        <div class="sim-actions">
+          <button id="simulate100" class="secondary">Simular 100 muestras</button>
+          <button id="simulate500">Simular 500 muestras</button>
+          <span class="coverage-pill" id="coverageResult">Cobertura pendiente</span>
+        </div>
+        <svg class="chart wide-chart" id="manyMeansPlot" role="img" aria-label="Histograma de medias muestrales"></svg>
+      </div>
+    </section>
+
+    <section class="module" id="estandarizacion">
+      <div class="module-title"><span>03</span><h2>Estandarización y Regla Empírica</h2></div>
+      <p class="module-intro">Week 8 conecta el TLC con estadísticos comparables: centrar, dividir por el error estándar y leer distancia en unidades estándar.</p>
+      <div class="grid visual-pair">
+        <article class="panel">
+          <h3>Del promedio al contraste</h3>
+          <p>Cuando sigma es conocida:</p>
+          <p><span class="formula-chip">Z = (X̄ - mu) / (sigma / sqrt(n))</span></p>
+          <p>Cuando sigma es desconocida:</p>
+          <p><span class="formula-chip">T = (X̄ - mu) / (s / sqrt(n))</span></p>
+          <p class="mini-note">La t de Student tiene colas más pesadas cuando n es pequeño porque también estamos estimando la dispersión.</p>
+        </article>
+        <article class="panel">
+          <h3>68-95-99 en la normal</h3>
+          <svg class="chart" id="empiricalRulePlot" role="img" aria-label="Regla empírica de la distribución normal"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="dianas">
+      <div class="module-title"><span>04</span><h2>Exactitud vs Precisión</h2></div>
+      <p class="module-intro">Un estimador ideal acierta en promedio y varía poco de muestra en muestra.</p>
+      <div class="target-grid">
+        <article class="target-card"><svg data-target="good"></svg><strong>Exacto y preciso</strong><p class="mini-note">Centro correcto y poca variación.</p></article>
+        <article class="target-card"><svg data-target="biased_precise"></svg><strong>Inexacto pero preciso</strong><p class="mini-note">Sesgo sistemático con poca variación.</p></article>
+        <article class="target-card"><svg data-target="unbiased_noisy"></svg><strong>Exacto pero impreciso</strong><p class="mini-note">Promedio correcto, estimaciones dispersas.</p></article>
+        <article class="target-card"><svg data-target="bad"></svg><strong>Inexacto e impreciso</strong><p class="mini-note">Sesgo y alta variación.</p></article>
+      </div>
+    </section>
+
+    <section class="module" id="hipotesis">
+      <div class="module-title"><span>05</span><h2>Primer Puente a Pruebas de Hipótesis</h2></div>
+      <p class="module-intro">Un intervalo pregunta qué valores de mu son compatibles con los datos. Una prueba pregunta si un valor específico mu0 resulta demasiado extremo.</p>
+      <div class="hypothesis-band">
+        <article class="panel">
+          <h3>Contrasta un valor hipotético</h3>
+          <div class="control-row">
+            <label for="mu0">Valor nulo mu0</label>
+            <input id="mu0" type="number" value="0" step="0.1">
+          </div>
+          <p class="mini-note" id="hypothesisResult">Genera una muestra para calcular el contraste.</p>
+        </article>
+        <article class="panel">
+          <h3>Zona compatible y zona extrema</h3>
+          <svg class="chart" id="hypothesisPlot" role="img" aria-label="Contraste de hipótesis sobre normal estándar"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="cierre">
+      <div class="module-title"><span>06</span><h2>Checklist Conceptual</h2></div>
+      <ul class="checklist">
+        <li><strong>Muestra:</strong> un vector aleatorio con n mediciones independientes e idénticamente distribuidas.</li>
+        <li><strong>Estadístico:</strong> una función que convierte la muestra en un número.</li>
+        <li><strong>Estimador:</strong> un estadístico usado para aproximar un parámetro desconocido.</li>
+        <li><strong>TLC:</strong> explica por qué el promedio se vuelve aproximadamente normal aunque la población original no lo sea.</li>
+        <li><strong>Intervalo:</strong> combina estimación puntual, error estándar y valor crítico.</li>
+      </ul>
+      <p class="footer-note">Fuentes conceptuales: Notes Week 6&7 y Notes Week 8 del curso.</p>
+    </section>
+  </main>
+</div>
+```

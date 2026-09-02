@@ -304,6 +304,7 @@
   }
 
   function initControls() {
+    if (!document.getElementById("triangleChart")) return;
     ["triBase", "triHeight"].forEach((id) => document.getElementById(id).addEventListener("input", drawTriangle));
     document.querySelectorAll(".prob-input").forEach((input) => input.addEventListener("input", () => {
       drawDiscrete();

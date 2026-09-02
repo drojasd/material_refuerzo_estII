@@ -3,9 +3,15 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - taller_distribuciones/index.qmd
+    - taller_estimadores/index.qmd
   resources:
     - lab.js
     - data.js
+    - workshop-data.js
+    - distributions-engine.js
+    - taller_distribuciones.js
+    - taller_estimadores.js
     - .nojekyll
 
 website:
@@ -17,11 +23,9 @@ website:
 format:
   html:
     theme: cosmo
-    css: styles.css
+    css:
+      - styles.css
+      - workshops.css
     toc: true
     toc-location: right
     embed-resources: false
-    include-after-body:
-      - text: |
-          <script src="data.js"></script>
-          <script src="lab.js"></script>
