@@ -74,6 +74,17 @@
     return x ** (df / 2 - 1) * Math.exp(-x / 2) / (2 ** (df / 2) * gammaFn(df / 2));
   }
 
+  function betaFn(a, b) {
+    return Math.exp(logGamma(a) + logGamma(b) - logGamma(a + b));
+  }
+
+  function fPdf(x, d1, d2) {
+    if (x <= 0) return 0;
+    const a = d1 / 2;
+    const b = d2 / 2;
+    return (d1 / d2) ** a * x ** (a - 1) / (betaFn(a, b) * (1 + d1 * x / d2) ** (a + b));
+  }
+
   function chiUpperApprox(x, df) {
     if (x <= 0) return 1;
     const z = ((x / df) ** (1 / 3) - (1 - 2 / (9 * df))) / Math.sqrt(2 / (9 * df));
@@ -390,6 +401,43 @@
     text(svg, sx(clamp(observed, 0, hi)) + 8, pad + 18, "observado", { fill: "#c96f2d", "font-size": 14, "font-weight": 900 });
   }
 
+  function drawFVarianceTest() {
+    const n1 = Math.max(3, Number(document.getElementById("fN1").value));
+    const n2 = Math.max(3, Number(document.getElementById("fN2").value));
+    const s1 = Math.max(0.001, Number(document.getElementById("fS1").value));
+    const s2 = Math.max(0.001, Number(document.getElementById("fS2").value));
+    const v1 = s1 * s1;
+    const v2 = s2 * s2;
+    const largerFirst = v1 >= v2;
+    const f = largerFirst ? v1 / v2 : v2 / v1;
+    const df1 = largerFirst ? n1 - 1 : n2 - 1;
+    const df2 = largerFirst ? n2 - 1 : n1 - 1;
+    const upper = integrate((x) => fPdf(x, df1, df2), f, Math.max(40, f * 10), 800);
+    const p = Math.min(1, 2 * upper);
+    document.getElementById("fStat").textContent = fmt(f, 3);
+    document.getElementById("fDf").textContent = `${df1}, ${df2}`;
+    document.getElementById("fP").textContent = fmt(p, 4);
+    document.getElementById("fDecision").textContent = `${largerFirst ? "Grupo 1" : "Grupo 2"} queda en el numerador. Con alpha=0.05: ${p < 0.05 ? "evidencia de varianzas distintas" : "no hay evidencia suficiente de varianzas distintas"}.`;
+    drawFCurve(document.getElementById("fPlot"), df1, df2, f);
+  }
+
+  function drawFCurve(svg, df1, df2, observed) {
+    clear(svg);
+    const w = 760, h = 360, pad = 48;
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const hi = Math.max(5, observed * 1.5);
+    const xs = Array.from({ length: 260 }, (_, i) => hi * (i + 1) / 260);
+    const maxY = Math.max(...xs.map((x) => fPdf(x, df1, df2)), 0.001);
+    const sx = (x) => pad + x / hi * (w - 2 * pad);
+    const sy = (y) => h - pad - y / maxY * (h - 2 * pad);
+    line(svg, pad, h - pad, w - pad, h - pad, { stroke: "#52606f", "stroke-width": 1.4 });
+    fillUnder(svg, xs, (x) => fPdf(x, df1, df2), sx, sy, h - pad, (x) => x >= observed, "rgba(201,111,45,0.26)");
+    svg.appendChild(svgEl("path", { d: path(xs.map((x) => [sx(x), sy(fPdf(x, df1, df2))])), fill: "none", stroke: "#24577a", "stroke-width": 4 }));
+    line(svg, sx(clamp(observed, 0, hi)), h - pad, sx(clamp(observed, 0, hi)), pad, { stroke: "#c96f2d", "stroke-width": 4 });
+    text(svg, pad + 8, pad + 18, `F(${df1}, ${df2})`, { fill: "#24577a", "font-size": 14, "font-weight": 900 });
+    text(svg, sx(clamp(observed, 0, hi)) + 8, pad + 40, "observado", { fill: "#c96f2d", "font-size": 14, "font-weight": 900 });
+  }
+
   function drawPower() {
     const alpha = Number(document.getElementById("powerAlpha").value);
     const effect = Number(document.getElementById("powerEffect").value);
@@ -459,6 +507,7 @@
     wire(["ksScenario", "ksN"], refreshKsSample, "change");
     document.getElementById("ksRefresh").addEventListener("click", refreshKsSample);
     wire(["varN", "varS", "varSigma0", "varShapeWarning"], drawVarianceTest);
+    wire(["fN1", "fS1", "fN2", "fS2"], drawFVarianceTest);
     wire(["powerAlpha", "powerEffect", "powerN"], drawPower);
     initChoiceQuiz();
     drawPValueLab();
@@ -469,6 +518,7 @@
     drawChiIndependence();
     refreshKsSample();
     drawVarianceTest();
+    drawFVarianceTest();
     drawPower();
   });
 })();

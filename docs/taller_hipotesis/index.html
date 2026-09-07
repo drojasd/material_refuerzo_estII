@@ -402,6 +402,29 @@ ul.task-list li input[type="checkbox"] {
           <svg class="chart wide-chart" id="variancePlot" role="img" aria-label="Prueba chi-cuadrado para varianza"></svg>
         </article>
       </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Dos varianzas: referencia F</h3>
+          <p class="mini-note">Cuando la pregunta compara dispersión entre dos grupos independientes, la razón de varianzas se lee contra una F. La diapositiva del curso recomienda poner la varianza muestral mayor en el numerador.</p>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="fN1">n grupo 1</label><input id="fN1" type="number" value="24" min="3" step="1"></div>
+            <div class="control-row"><label for="fS1">s grupo 1</label><input id="fS1" type="number" value="9" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="fN2">n grupo 2</label><input id="fN2" type="number" value="20" min="3" step="1"></div>
+            <div class="control-row"><label for="fS2">s grupo 2</label><input id="fS2" type="number" value="5.5" min="0.1" step="0.1"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>F observado</b><span id="fStat">-</span></div>
+            <div class="metric"><b>gl</b><span id="fDf">-</span></div>
+            <div class="metric"><b>p-valor aprox.</b><span id="fP">-</span></div>
+          </div>
+          <p class="mini-note" id="fDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Cola derecha de la F</h3>
+          <svg class="chart wide-chart" id="fPlot" role="img" aria-label="Prueba F para comparar dos varianzas"></svg>
+        </article>
+      </div>
     </section>
 
     <section class="module" id="poder">
