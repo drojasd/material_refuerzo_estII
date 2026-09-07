@@ -1,0 +1,399 @@
+---
+title: "Taller: Pruebas de Hipótesis"
+lang: es
+format:
+  html:
+    include-after-body:
+      - text: |
+          <script src="../workshop-data.js"></script>
+          <script src="../distributions-engine.js"></script>
+          <script src="../taller_hipotesis.js"></script>
+---
+
+```{=html}
+<div class="lab-shell" id="hypothesisWorkshop">
+  <header class="lab-header">
+    <div class="header-grid">
+      <div>
+        <p class="eyebrow">Estadística II para Ciencias Políticas y Diseño Urbano</p>
+        <h1>Taller: Pruebas de Hipótesis</h1>
+        <p class="lead">Un laboratorio visual para traducir preguntas sustantivas en H0, H1, estadísticos, p-valores, decisiones e interpretaciones responsables.</p>
+        <div class="site-links">
+          <a href="../">Laboratorio Parcial 1</a>
+          <a href="../taller_distribuciones/">Taller de distribuciones</a>
+          <a href="../taller_estimadores/">Taller de estimadores</a>
+        </div>
+      </div>
+      <aside class="status-panel">
+        <p class="status-title">Ruta visual</p>
+        <p class="mini-note">Primero identifica el parámetro y el diseño. Luego revisa supuestos, mira la región extrema y escribe la conclusión sin convertir asociación en causalidad.</p>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="lab-nav" aria-label="Secciones del taller">
+    <a href="#anatomia">Anatomía</a>
+    <a href="#selector">Selector</a>
+    <a href="#calculos">Una muestra</a>
+    <a href="#comparaciones">Comparaciones</a>
+    <a href="#ajuste">KS y varianzas</a>
+    <a href="#poder">Errores y poder</a>
+    <a href="#casos">Casos</a>
+    <a href="#cierre">Cierre</a>
+  </nav>
+
+  <main>
+    <section class="module" id="anatomia">
+      <div class="module-title"><span>01</span><h2>Anatomía de una Prueba</h2></div>
+      <p class="module-intro">Una prueba de hipótesis mide qué tan raro sería observar un estadístico como el nuestro si H0 fuera una buena descripción del mundo.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Laboratorio de p-valor y región crítica</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="tailSelect">Hipótesis alternativa</label>
+              <select id="tailSelect">
+                <option value="right">H1: parámetro mayor que H0</option>
+                <option value="left">H1: parámetro menor que H0</option>
+                <option value="two">H1: parámetro diferente de H0</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="alphaSlider">Nivel alpha <span id="alphaValue">0.05</span></label>
+              <input id="alphaSlider" type="range" min="0.01" max="0.20" step="0.01" value="0.05">
+            </div>
+            <div class="control-row">
+              <label for="statSlider">Estadístico observado <span id="statValue">1.20</span></label>
+              <input id="statSlider" type="range" min="-3.5" max="3.5" step="0.05" value="1.20">
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>p-valor</b><span id="pValueText">-</span></div>
+            <div class="metric"><b>Regla</b><span id="criticalText">-</span></div>
+            <div class="metric"><b>Decisión</b><span id="decisionText">-</span></div>
+          </div>
+          <p class="mini-note">La decisión estadística no responde todavía si el diseño permite causalidad. Esa parte depende de muestreo, asignación, controles y amenazas de sesgo.</p>
+        </article>
+        <article class="panel">
+          <h3>Distribución de referencia bajo H0</h3>
+          <svg class="chart wide-chart" id="pValuePlot" role="img" aria-label="Curva normal con p-valor y region critica"></svg>
+        </article>
+      </div>
+      <div class="quiz-grid">
+        <article class="quiz-card" data-hyp-answer="b" data-ok="Correcto: alpha es una regla antes de observar datos; el p-valor sale de los datos." data-hint="Alpha lo decide quien analiza. El p-valor se calcula con el estadístico observado.">
+          <p class="question">¿Cuál diferencia entre alpha y p-valor es correcta?</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="a">Ambos son supuestos del modelo.</button>
+            <button class="choice-button" data-choice="b">Alpha es umbral; p-valor es evidencia contra H0.</button>
+            <button class="choice-button" data-choice="c">El p-valor es la probabilidad de que H0 sea verdadera.</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="c" data-ok="Bien: rechazar H0 significa incompatibilidad estadística con H0 al umbral elegido." data-hint="No convierte automáticamente la magnitud en importante ni la asociación en efecto causal.">
+          <p class="question">Si p &lt; 0.05 en un estudio observacional sobre parques y bienestar, lo más cuidadoso es decir:</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="a">Los parques causan bienestar.</button>
+            <button class="choice-button" data-choice="b">H0 es falsa con probabilidad 95%.</button>
+            <button class="choice-button" data-choice="c">Hay evidencia estadística de asociación, no causalidad garantizada.</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="selector">
+      <div class="module-title"><span>02</span><h2>Selector de Pruebas</h2></div>
+      <p class="module-intro">La prueba sale del tipo de parámetro, el número de muestras, la escala de medición y los supuestos. No sale del gusto por una fórmula.</p>
+      <div class="hypothesis-band">
+        <article class="panel">
+          <h3>Describe tu pregunta</h3>
+          <div class="test-selector-grid">
+            <div class="control-row">
+              <label for="targetType">¿Qué quieres contrastar?</label>
+              <select id="targetType">
+                <option value="mean">Media de una medición</option>
+                <option value="proportion">Proporción o porcentaje</option>
+                <option value="variance">Varianza o desviación</option>
+                <option value="two_means">Diferencia de medias</option>
+                <option value="two_props">Diferencia de proporciones</option>
+                <option value="independence">Independencia entre categorías</option>
+                <option value="fit">Ajuste a una distribución</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="sampleCount">Diseño</label>
+              <select id="sampleCount">
+                <option value="one">Una muestra</option>
+                <option value="two">Dos muestras independientes</option>
+                <option value="paired">Antes/después o pares</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="sigmaSelect">Sigma poblacional</label>
+              <select id="sigmaSelect">
+                <option value="unknown">Desconocida</option>
+                <option value="known">Conocida</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="normalitySelect">Supuestos de forma</label>
+              <select id="normalitySelect">
+                <option value="ok">Normalidad plausible o n grande</option>
+                <option value="small_skew">Muestra pequeña y asimetría fuerte</option>
+                <option value="categorical">Datos categóricos</option>
+              </select>
+            </div>
+          </div>
+          <div class="decision-panel" id="testRecommendation">
+            Selecciona la pregunta para ver la prueba recomendada.
+          </div>
+        </article>
+        <article class="panel">
+          <h3>Mapa de decisión</h3>
+          <svg class="chart wide-chart" id="testMapPlot" role="img" aria-label="Mapa visual de seleccion de pruebas"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="calculos">
+      <div class="module-title"><span>03</span><h2>Una Muestra: Proporción y Media</h2></div>
+      <p class="module-intro">Estos dos casos reparan errores clásicos: usar el porcentaje crudo sin prueba y usar Z cuando sigma es desconocida con n pequeño.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Proporción de apoyo a una política</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="propN">n</label><input id="propN" type="number" value="200" min="20" step="1"></div>
+            <div class="control-row"><label for="propX">Éxitos observados x</label><input id="propX" type="number" value="130" min="0" step="1"></div>
+            <div class="control-row"><label for="propP0">p0 bajo H0</label><input id="propP0" type="number" value="0.60" min="0.01" max="0.99" step="0.01"></div>
+            <div class="control-row">
+              <label for="propAlt">H1</label>
+              <select id="propAlt">
+                <option value="right">p &gt; p0</option>
+                <option value="left">p &lt; p0</option>
+                <option value="two">p != p0</option>
+              </select>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>p-hat</b><span id="propPhat">-</span></div>
+            <div class="metric"><b>z observado</b><span id="propZ">-</span></div>
+            <div class="metric"><b>p-valor</b><span id="propP">-</span></div>
+          </div>
+          <p class="mini-note" id="propDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3>Distribución aproximada de p-hat bajo H0</h3>
+          <svg class="chart wide-chart" id="propPlot" role="img" aria-label="Prueba z para una proporcion"></svg>
+        </article>
+      </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Media con sigma desconocida</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="meanN">n</label><input id="meanN" type="number" value="15" min="3" step="1"></div>
+            <div class="control-row"><label for="meanXbar">x-barra</label><input id="meanXbar" type="number" value="54" step="0.1"></div>
+            <div class="control-row"><label for="meanS">s muestral</label><input id="meanS" type="number" value="8" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="meanMu0">mu0 bajo H0</label><input id="meanMu0" type="number" value="50" step="0.1"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>gl</b><span id="meanDf">-</span></div>
+            <div class="metric"><b>t observado</b><span id="meanT">-</span></div>
+            <div class="metric"><b>p-valor bilateral</b><span id="meanP">-</span></div>
+          </div>
+          <p class="mini-note">Con n=15 y sigma desconocida, la distribución de referencia es t de Student. La normal aparece como comparación visual, no como prueba principal.</p>
+        </article>
+        <article class="panel">
+          <h3>t de Student vs normal estándar</h3>
+          <svg class="chart wide-chart" id="meanPlot" role="img" aria-label="Prueba t de una muestra"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="comparaciones">
+      <div class="module-title"><span>04</span><h2>Comparaciones e Independencia</h2></div>
+      <p class="module-intro">Comparar intervalos a ojo no reemplaza una prueba sobre la diferencia. Y un chi-cuadrado de independencia habla de asociación, no de causalidad.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Dos medias independientes</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="m1">Media ciudad A</label><input id="m1" type="number" value="50" step="0.1"></div>
+            <div class="control-row"><label for="s1">s ciudad A</label><input id="s1" type="number" value="22.5" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="n1">n ciudad A</label><input id="n1" type="number" value="80" min="2" step="1"></div>
+            <div class="control-row"><label for="m2">Media ciudad B</label><input id="m2" type="number" value="45" step="0.1"></div>
+            <div class="control-row"><label for="s2">s ciudad B</label><input id="s2" type="number" value="22.5" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="n2">n ciudad B</label><input id="n2" type="number" value="80" min="2" step="1"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Diferencia</b><span id="diffMean">-</span></div>
+            <div class="metric"><b>t Welch</b><span id="welchT">-</span></div>
+            <div class="metric"><b>p-valor</b><span id="welchP">-</span></div>
+          </div>
+          <p class="mini-note" id="welchDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3>Distribución de la diferencia bajo H0</h3>
+          <svg class="chart wide-chart" id="twoMeanPlot" role="img" aria-label="Prueba t de Welch para dos medias"></svg>
+        </article>
+      </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Independencia en tabla de contingencia</h3>
+          <p class="mini-note">Ejemplo: nivel educativo por participación electoral. Edita los conteos y observa cómo cambian esperados y contribuciones.</p>
+          <div class="table-input-grid" aria-label="Tabla observada 3 por 2">
+            <span></span><strong>Votó</strong><strong>No votó</strong>
+            <strong>Bajo</strong><input class="chiInput" type="number" value="34" min="0"><input class="chiInput" type="number" value="46" min="0">
+            <strong>Medio</strong><input class="chiInput" type="number" value="58" min="0"><input class="chiInput" type="number" value="42" min="0">
+            <strong>Alto</strong><input class="chiInput" type="number" value="54" min="0"><input class="chiInput" type="number" value="16" min="0">
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>chi-cuadrado</b><span id="chiStat">-</span></div>
+            <div class="metric"><b>gl</b><span id="chiDf">-</span></div>
+            <div class="metric"><b>p-valor aprox.</b><span id="chiP">-</span></div>
+          </div>
+          <p class="mini-note" id="chiDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3>Esperados y aportes al estadístico</h3>
+          <svg class="chart wide-chart" id="chiPlot" role="img" aria-label="Mapa de calor de prueba chi-cuadrado"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="ajuste">
+      <div class="module-title"><span>05</span><h2>KS, Varianzas y Supuestos</h2></div>
+      <p class="module-intro">Algunas pruebas son muy sensibles a la forma de la distribución. Cuando la muestra es pequeña o asimétrica, la prueba puede responder una pregunta distinta a la que imaginamos.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Kolmogorov-Smirnov visual</h3>
+          <div class="parameter-grid">
+            <div class="control-row">
+              <label for="ksScenario">Muestra simulada</label>
+              <select id="ksScenario">
+                <option value="normal">Parecida a normal</option>
+                <option value="skew">Asimétrica positiva</option>
+                <option value="bimodal">Bimodal</option>
+              </select>
+            </div>
+            <div class="control-row"><label for="ksN">n</label><input id="ksN" type="number" value="35" min="10" max="150" step="1"></div>
+          </div>
+          <button id="ksRefresh" class="secondary">Generar otra muestra</button>
+          <div class="metric-row">
+            <div class="metric"><b>D máximo</b><span id="ksD">-</span></div>
+            <div class="metric"><b>Umbral 5%</b><span id="ksCrit">-</span></div>
+            <div class="metric"><b>Lectura</b><span id="ksDecision">-</span></div>
+          </div>
+          <p class="mini-note">No rechazar normalidad no significa probar normalidad. Significa que esta muestra no produjo una discrepancia suficientemente grande.</p>
+        </article>
+        <article class="panel">
+          <h3>ECDF y CDF normal hipotética</h3>
+          <svg class="chart wide-chart" id="ksPlot" role="img" aria-label="Prueba Kolmogorov-Smirnov con ECDF y CDF teorica"></svg>
+        </article>
+      </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Pruebas de varianza</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="varN">n</label><input id="varN" type="number" value="18" min="3" step="1"></div>
+            <div class="control-row"><label for="varS">s observada</label><input id="varS" type="number" value="8" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="varSigma0">sigma0</label><input id="varSigma0" type="number" value="5" min="0.1" step="0.1"></div>
+            <div class="control-row">
+              <label for="varShapeWarning">Forma de datos</label>
+              <select id="varShapeWarning">
+                <option value="ok">Aproximadamente normal</option>
+                <option value="skew">Asimétrica o con atípicos</option>
+              </select>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>chi-cuadrado</b><span id="varChi">-</span></div>
+            <div class="metric"><b>gl</b><span id="varDf">-</span></div>
+            <div class="metric"><b>p-valor aprox.</b><span id="varP">-</span></div>
+          </div>
+          <p class="mini-note" id="varDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3>Referencia chi-cuadrado para una varianza</h3>
+          <svg class="chart wide-chart" id="variancePlot" role="img" aria-label="Prueba chi-cuadrado para varianza"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="poder">
+      <div class="module-title"><span>06</span><h2>Errores Tipo I, Tipo II y Poder</h2></div>
+      <p class="module-intro">Bajar alpha reduce falsos positivos, pero puede aumentar falsos negativos. Aumentar n ayuda a separar mejor H0 de una alternativa real.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3>Simula la tensión entre alpha y poder</h3>
+          <div class="controls">
+            <div class="control-row"><label for="powerAlpha">Alpha <span id="powerAlphaText">0.05</span></label><input id="powerAlpha" type="range" min="0.01" max="0.20" step="0.01" value="0.05"></div>
+            <div class="control-row"><label for="powerEffect">Efecto real <span id="powerEffectText">0.50</span></label><input id="powerEffect" type="range" min="0.05" max="1.50" step="0.05" value="0.50"></div>
+            <div class="control-row"><label for="powerN">Tamaño muestral n <span id="powerNText">40</span></label><input id="powerN" type="range" min="10" max="250" step="5" value="40"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Error tipo I</b><span id="alphaMetric">-</span></div>
+            <div class="metric"><b>Error tipo II</b><span id="betaMetric">-</span></div>
+            <div class="metric"><b>Poder</b><span id="powerMetric">-</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <h3>H0, H1 y región de rechazo</h3>
+          <svg class="chart wide-chart" id="powerPlot" role="img" aria-label="Curvas nula y alternativa con poder"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="casos">
+      <div class="module-title"><span>07</span><h2>Casos Interpretativos</h2></div>
+      <p class="module-intro">Estas preguntas son análogas al taller de ejercicios del curso: exigen elegir método, revisar supuestos y escribir una conclusión sobria.</p>
+      <div class="case-pack">
+        <article class="quiz-card" data-hyp-answer="b" data-ok="Correcto: el problema no es solo el p-valor, sino la conclusión causal sin diseño causal." data-hint="Un resultado significativo en un estudio observacional puede tener confusión o sesgo de selección.">
+          <p class="question">Una encuesta encuentra que vivir cerca de parques se asocia con mayor bienestar (p&lt;0.01) y concluye que construir parques causará bienestar.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Conclusión causal justificada.</button><button class="choice-button" data-choice="b">Evidencia de asociación, causalidad no garantizada.</button><button class="choice-button" data-choice="c">Sin evidencia estadística.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="c" data-ok="Bien: dos intervalos que se traslapan no resuelven automáticamente la prueba de diferencia." data-hint="La pregunta correcta contrasta la diferencia entre medias, idealmente con datos y supuestos claros.">
+          <p class="question">Dos tiempos promedio de viaje tienen IC que se traslapan. El informe afirma que no hay diferencia.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Siempre correcto.</button><button class="choice-button" data-choice="b">Debe usarse KS.</button><button class="choice-button" data-choice="c">Hace falta prueba o IC de la diferencia.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="a" data-ok="Correcto: chi-cuadrado detecta asociación entre categorías, no mecanismo causal." data-hint="La prueba no asignó educación al azar ni descartó confusores.">
+          <p class="question">Educación y voto producen chi-cuadrado p=0.03. ¿Qué afirma la prueba?</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Hay evidencia de asociación.</button><button class="choice-button" data-choice="b">Educación causa voto.</button><button class="choice-button" data-choice="c">Las variables son continuas normales.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="b" data-ok="Exacto: con n pequeño y sigma desconocida, se usa t de Student si los supuestos son plausibles." data-hint="La normal Z requiere sigma conocida o una justificación asintótica fuerte.">
+          <p class="question">n=15, sigma desconocida, se quiere contrastar una media. ¿Referencia principal?</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Normal Z siempre.</button><button class="choice-button" data-choice="b">t de Student.</button><button class="choice-button" data-choice="c">Chi-cuadrado de independencia.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="c" data-ok="Correcto: la prueba de varianza con chi-cuadrado asume normalidad poblacional." data-hint="Asimetría fuerte y atípicos pueden distorsionar mucho el contraste de varianza.">
+          <p class="question">Una prueba de varianza se aplica a datos muy asimétricos y con atípicos.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">No importa la forma.</button><button class="choice-button" data-choice="b">La prueba se vuelve causal.</button><button class="choice-button" data-choice="c">Hay que cuestionar el supuesto de normalidad.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="a" data-ok="Bien: en eventos raros, accuracy puede ser alta aunque el modelo no detecte bien los casos importantes." data-hint="Para enfermedad rara, mira recall, precision, falsos negativos y costos de error.">
+          <p class="question">Un clasificador de una enfermedad rara tiene accuracy 99%, pero detecta pocos casos reales.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Accuracy puede ser engañosa.</button><button class="choice-button" data-choice="b">Es perfecto.</button><button class="choice-button" data-choice="c">Eso prueba independencia.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="cierre">
+      <div class="module-title"><span>08</span><h2>Checklist Para Responder Casos</h2></div>
+      <ul class="checklist">
+        <li><strong>Pregunta:</strong> ¿cuál es el parámetro, diferencia, asociación o forma que se quiere evaluar?</li>
+        <li><strong>Hipótesis:</strong> escribe H0 como referencia concreta y H1 según la dirección de la pregunta.</li>
+        <li><strong>Prueba:</strong> elige Z, t, chi-cuadrado, F, KS o una alternativa robusta según variable, diseño y supuestos.</li>
+        <li><strong>Gráfica:</strong> ubica el estadístico en su distribución de referencia y sombrea la zona extrema.</li>
+        <li><strong>Interpretación:</strong> habla de evidencia contra H0, no de probabilidad de que H0 sea verdadera.</li>
+        <li><strong>Diseño:</strong> separa significancia estadística, tamaño del efecto, validez externa y causalidad.</li>
+      </ul>
+      <p class="footer-note">Fuentes conceptuales: taller de ejercicios de Estadística 2 y diapositivas Stats - Test.pptx del curso. Todo el cálculo ocurre localmente en el navegador.</p>
+    </section>
+  </main>
+</div>
+```

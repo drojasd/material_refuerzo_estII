@@ -20,6 +20,7 @@ format:
         <div class="site-links">
           <a href="taller_distribuciones/">Taller de distribuciones</a>
           <a href="taller_estimadores/">Taller de estimadores</a>
+          <a href="taller_hipotesis/">Taller de hipótesis</a>
         </div>
       </div>
       <aside class="status-panel" aria-label="Progreso de autoevaluación">

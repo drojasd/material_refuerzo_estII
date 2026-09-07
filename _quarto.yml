@@ -5,6 +5,7 @@ project:
     - index.qmd
     - taller_distribuciones/index.qmd
     - taller_estimadores/index.qmd
+    - taller_hipotesis/index.qmd
   resources:
     - lab.js
     - data.js
@@ -12,6 +13,7 @@ project:
     - distributions-engine.js
     - taller_distribuciones.js
     - taller_estimadores.js
+    - taller_hipotesis.js
     - .nojekyll
 
 website:

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Taller: Pruebas de Hipótesis – Laboratorio Parcial 1</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-172ba59bd5e0b52282274ba0c0cc16fc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../workshops.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Taller: Pruebas de Hipótesis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lab-shell page-columns page-full" id="hypothesisWorkshop">
+  <header class="lab-header page-columns page-full">
+    <div class="header-grid page-columns page-full">
+      <div>
+        <p class="eyebrow">Estadística II para Ciencias Políticas y Diseño Urbano</p>
+        <h1>Taller: Pruebas de Hipótesis</h1>
+        <p class="lead">Un laboratorio visual para traducir preguntas sustantivas en H0, H1, estadísticos, p-valores, decisiones e interpretaciones responsables.</p>
+        <div class="site-links">
+          <a href="../">Laboratorio Parcial 1</a>
+          <a href="../taller_distribuciones/">Taller de distribuciones</a>
+          <a href="../taller_estimadores/">Taller de estimadores</a>
+        </div>
+      </div>
+      <aside class="status-panel">
+        <p class="status-title">Ruta visual</p>
+        <p class="mini-note">Primero identifica el parámetro y el diseño. Luego revisa supuestos, mira la región extrema y escribe la conclusión sin convertir asociación en causalidad.</p>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="lab-nav" aria-label="Secciones del taller">
+    <a href="#anatomia">Anatomía</a>
+    <a href="#selector">Selector</a>
+    <a href="#calculos">Una muestra</a>
+    <a href="#comparaciones">Comparaciones</a>
+    <a href="#ajuste">KS y varianzas</a>
+    <a href="#poder">Errores y poder</a>
+    <a href="#casos">Casos</a>
+    <a href="#cierre">Cierre</a>
+  </nav>
+
+  <main>
+    <section class="module" id="anatomia">
+      <div class="module-title"><span>01</span><h2 class="anchored">Anatomía de una Prueba</h2></div>
+      <p class="module-intro">Una prueba de hipótesis mide qué tan raro sería observar un estadístico como el nuestro si H0 fuera una buena descripción del mundo.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Laboratorio de p-valor y región crítica</h3>
+          <div class="controls">
+            <div class="control-row">
+              <label for="tailSelect">Hipótesis alternativa</label>
+              <select id="tailSelect">
+                <option value="right">H1: parámetro mayor que H0</option>
+                <option value="left">H1: parámetro menor que H0</option>
+                <option value="two">H1: parámetro diferente de H0</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="alphaSlider">Nivel alpha <span id="alphaValue">0.05</span></label>
+              <input id="alphaSlider" type="range" min="0.01" max="0.20" step="0.01" value="0.05">
+            </div>
+            <div class="control-row">
+              <label for="statSlider">Estadístico observado <span id="statValue">1.20</span></label>
+              <input id="statSlider" type="range" min="-3.5" max="3.5" step="0.05" value="1.20">
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>p-valor</b><span id="pValueText">-</span></div>
+            <div class="metric"><b>Regla</b><span id="criticalText">-</span></div>
+            <div class="metric"><b>Decisión</b><span id="decisionText">-</span></div>
+          </div>
+          <p class="mini-note">La decisión estadística no responde todavía si el diseño permite causalidad. Esa parte depende de muestreo, asignación, controles y amenazas de sesgo.</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Distribución de referencia bajo H0</h3>
+          <svg class="chart wide-chart" id="pValuePlot" role="img" aria-label="Curva normal con p-valor y region critica"></svg>
+        </article>
+      </div>
+      <div class="quiz-grid">
+        <article class="quiz-card" data-hyp-answer="b" data-ok="Correcto: alpha es una regla antes de observar datos; el p-valor sale de los datos." data-hint="Alpha lo decide quien analiza. El p-valor se calcula con el estadístico observado.">
+          <p class="question">¿Cuál diferencia entre alpha y p-valor es correcta?</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="a">Ambos son supuestos del modelo.</button>
+            <button class="choice-button" data-choice="b">Alpha es umbral; p-valor es evidencia contra H0.</button>
+            <button class="choice-button" data-choice="c">El p-valor es la probabilidad de que H0 sea verdadera.</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="c" data-ok="Bien: rechazar H0 significa incompatibilidad estadística con H0 al umbral elegido." data-hint="No convierte automáticamente la magnitud en importante ni la asociación en efecto causal.">
+          <p class="question">Si p &lt; 0.05 en un estudio observacional sobre parques y bienestar, lo más cuidadoso es decir:</p>
+          <div class="choice-grid">
+            <button class="choice-button" data-choice="a">Los parques causan bienestar.</button>
+            <button class="choice-button" data-choice="b">H0 es falsa con probabilidad 95%.</button>
+            <button class="choice-button" data-choice="c">Hay evidencia estadística de asociación, no causalidad garantizada.</button>
+          </div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="selector">
+      <div class="module-title"><span>02</span><h2 class="anchored">Selector de Pruebas</h2></div>
+      <p class="module-intro">La prueba sale del tipo de parámetro, el número de muestras, la escala de medición y los supuestos. No sale del gusto por una fórmula.</p>
+      <div class="hypothesis-band">
+        <article class="panel">
+          <h3 class="anchored">Describe tu pregunta</h3>
+          <div class="test-selector-grid">
+            <div class="control-row">
+              <label for="targetType">¿Qué quieres contrastar?</label>
+              <select id="targetType">
+                <option value="mean">Media de una medición</option>
+                <option value="proportion">Proporción o porcentaje</option>
+                <option value="variance">Varianza o desviación</option>
+                <option value="two_means">Diferencia de medias</option>
+                <option value="two_props">Diferencia de proporciones</option>
+                <option value="independence">Independencia entre categorías</option>
+                <option value="fit">Ajuste a una distribución</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="sampleCount">Diseño</label>
+              <select id="sampleCount">
+                <option value="one">Una muestra</option>
+                <option value="two">Dos muestras independientes</option>
+                <option value="paired">Antes/después o pares</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="sigmaSelect">Sigma poblacional</label>
+              <select id="sigmaSelect">
+                <option value="unknown">Desconocida</option>
+                <option value="known">Conocida</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="normalitySelect">Supuestos de forma</label>
+              <select id="normalitySelect">
+                <option value="ok">Normalidad plausible o n grande</option>
+                <option value="small_skew">Muestra pequeña y asimetría fuerte</option>
+                <option value="categorical">Datos categóricos</option>
+              </select>
+            </div>
+          </div>
+          <div class="decision-panel" id="testRecommendation">
+            Selecciona la pregunta para ver la prueba recomendada.
+          </div>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Mapa de decisión</h3>
+          <svg class="chart wide-chart" id="testMapPlot" role="img" aria-label="Mapa visual de seleccion de pruebas"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="calculos">
+      <div class="module-title"><span>03</span><h2 class="anchored">Una Muestra: Proporción y Media</h2></div>
+      <p class="module-intro">Estos dos casos reparan errores clásicos: usar el porcentaje crudo sin prueba y usar Z cuando sigma es desconocida con n pequeño.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Proporción de apoyo a una política</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="propN">n</label><input id="propN" type="number" value="200" min="20" step="1"></div>
+            <div class="control-row"><label for="propX">Éxitos observados x</label><input id="propX" type="number" value="130" min="0" step="1"></div>
+            <div class="control-row"><label for="propP0">p0 bajo H0</label><input id="propP0" type="number" value="0.60" min="0.01" max="0.99" step="0.01"></div>
+            <div class="control-row">
+              <label for="propAlt">H1</label>
+              <select id="propAlt">
+                <option value="right">p &gt; p0</option>
+                <option value="left">p &lt; p0</option>
+                <option value="two">p != p0</option>
+              </select>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>p-hat</b><span id="propPhat">-</span></div>
+            <div class="metric"><b>z observado</b><span id="propZ">-</span></div>
+            <div class="metric"><b>p-valor</b><span id="propP">-</span></div>
+          </div>
+          <p class="mini-note" id="propDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Distribución aproximada de p-hat bajo H0</h3>
+          <svg class="chart wide-chart" id="propPlot" role="img" aria-label="Prueba z para una proporcion"></svg>
+        </article>
+      </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Media con sigma desconocida</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="meanN">n</label><input id="meanN" type="number" value="15" min="3" step="1"></div>
+            <div class="control-row"><label for="meanXbar">x-barra</label><input id="meanXbar" type="number" value="54" step="0.1"></div>
+            <div class="control-row"><label for="meanS">s muestral</label><input id="meanS" type="number" value="8" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="meanMu0">mu0 bajo H0</label><input id="meanMu0" type="number" value="50" step="0.1"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>gl</b><span id="meanDf">-</span></div>
+            <div class="metric"><b>t observado</b><span id="meanT">-</span></div>
+            <div class="metric"><b>p-valor bilateral</b><span id="meanP">-</span></div>
+          </div>
+          <p class="mini-note">Con n=15 y sigma desconocida, la distribución de referencia es t de Student. La normal aparece como comparación visual, no como prueba principal.</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">t de Student vs normal estándar</h3>
+          <svg class="chart wide-chart" id="meanPlot" role="img" aria-label="Prueba t de una muestra"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="comparaciones">
+      <div class="module-title"><span>04</span><h2 class="anchored">Comparaciones e Independencia</h2></div>
+      <p class="module-intro">Comparar intervalos a ojo no reemplaza una prueba sobre la diferencia. Y un chi-cuadrado de independencia habla de asociación, no de causalidad.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Dos medias independientes</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="m1">Media ciudad A</label><input id="m1" type="number" value="50" step="0.1"></div>
+            <div class="control-row"><label for="s1">s ciudad A</label><input id="s1" type="number" value="22.5" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="n1">n ciudad A</label><input id="n1" type="number" value="80" min="2" step="1"></div>
+            <div class="control-row"><label for="m2">Media ciudad B</label><input id="m2" type="number" value="45" step="0.1"></div>
+            <div class="control-row"><label for="s2">s ciudad B</label><input id="s2" type="number" value="22.5" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="n2">n ciudad B</label><input id="n2" type="number" value="80" min="2" step="1"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Diferencia</b><span id="diffMean">-</span></div>
+            <div class="metric"><b>t Welch</b><span id="welchT">-</span></div>
+            <div class="metric"><b>p-valor</b><span id="welchP">-</span></div>
+          </div>
+          <p class="mini-note" id="welchDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Distribución de la diferencia bajo H0</h3>
+          <svg class="chart wide-chart" id="twoMeanPlot" role="img" aria-label="Prueba t de Welch para dos medias"></svg>
+        </article>
+      </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Independencia en tabla de contingencia</h3>
+          <p class="mini-note">Ejemplo: nivel educativo por participación electoral. Edita los conteos y observa cómo cambian esperados y contribuciones.</p>
+          <div class="table-input-grid" aria-label="Tabla observada 3 por 2">
+            <span></span><strong>Votó</strong><strong>No votó</strong>
+            <strong>Bajo</strong><input class="chiInput" type="number" value="34" min="0"><input class="chiInput" type="number" value="46" min="0">
+            <strong>Medio</strong><input class="chiInput" type="number" value="58" min="0"><input class="chiInput" type="number" value="42" min="0">
+            <strong>Alto</strong><input class="chiInput" type="number" value="54" min="0"><input class="chiInput" type="number" value="16" min="0">
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>chi-cuadrado</b><span id="chiStat">-</span></div>
+            <div class="metric"><b>gl</b><span id="chiDf">-</span></div>
+            <div class="metric"><b>p-valor aprox.</b><span id="chiP">-</span></div>
+          </div>
+          <p class="mini-note" id="chiDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Esperados y aportes al estadístico</h3>
+          <svg class="chart wide-chart" id="chiPlot" role="img" aria-label="Mapa de calor de prueba chi-cuadrado"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="ajuste">
+      <div class="module-title"><span>05</span><h2 class="anchored">KS, Varianzas y Supuestos</h2></div>
+      <p class="module-intro">Algunas pruebas son muy sensibles a la forma de la distribución. Cuando la muestra es pequeña o asimétrica, la prueba puede responder una pregunta distinta a la que imaginamos.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Kolmogorov-Smirnov visual</h3>
+          <div class="parameter-grid">
+            <div class="control-row">
+              <label for="ksScenario">Muestra simulada</label>
+              <select id="ksScenario">
+                <option value="normal">Parecida a normal</option>
+                <option value="skew">Asimétrica positiva</option>
+                <option value="bimodal">Bimodal</option>
+              </select>
+            </div>
+            <div class="control-row"><label for="ksN">n</label><input id="ksN" type="number" value="35" min="10" max="150" step="1"></div>
+          </div>
+          <button id="ksRefresh" class="secondary">Generar otra muestra</button>
+          <div class="metric-row">
+            <div class="metric"><b>D máximo</b><span id="ksD">-</span></div>
+            <div class="metric"><b>Umbral 5%</b><span id="ksCrit">-</span></div>
+            <div class="metric"><b>Lectura</b><span id="ksDecision">-</span></div>
+          </div>
+          <p class="mini-note">No rechazar normalidad no significa probar normalidad. Significa que esta muestra no produjo una discrepancia suficientemente grande.</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">ECDF y CDF normal hipotética</h3>
+          <svg class="chart wide-chart" id="ksPlot" role="img" aria-label="Prueba Kolmogorov-Smirnov con ECDF y CDF teorica"></svg>
+        </article>
+      </div>
+
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Pruebas de varianza</h3>
+          <div class="parameter-grid">
+            <div class="control-row"><label for="varN">n</label><input id="varN" type="number" value="18" min="3" step="1"></div>
+            <div class="control-row"><label for="varS">s observada</label><input id="varS" type="number" value="8" min="0.1" step="0.1"></div>
+            <div class="control-row"><label for="varSigma0">sigma0</label><input id="varSigma0" type="number" value="5" min="0.1" step="0.1"></div>
+            <div class="control-row">
+              <label for="varShapeWarning">Forma de datos</label>
+              <select id="varShapeWarning">
+                <option value="ok">Aproximadamente normal</option>
+                <option value="skew">Asimétrica o con atípicos</option>
+              </select>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>chi-cuadrado</b><span id="varChi">-</span></div>
+            <div class="metric"><b>gl</b><span id="varDf">-</span></div>
+            <div class="metric"><b>p-valor aprox.</b><span id="varP">-</span></div>
+          </div>
+          <p class="mini-note" id="varDecision">-</p>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">Referencia chi-cuadrado para una varianza</h3>
+          <svg class="chart wide-chart" id="variancePlot" role="img" aria-label="Prueba chi-cuadrado para varianza"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="poder">
+      <div class="module-title"><span>06</span><h2 class="anchored">Errores Tipo I, Tipo II y Poder</h2></div>
+      <p class="module-intro">Bajar alpha reduce falsos positivos, pero puede aumentar falsos negativos. Aumentar n ayuda a separar mejor H0 de una alternativa real.</p>
+      <div class="plot-pair">
+        <article class="panel">
+          <h3 class="anchored">Simula la tensión entre alpha y poder</h3>
+          <div class="controls">
+            <div class="control-row"><label for="powerAlpha">Alpha <span id="powerAlphaText">0.05</span></label><input id="powerAlpha" type="range" min="0.01" max="0.20" step="0.01" value="0.05"></div>
+            <div class="control-row"><label for="powerEffect">Efecto real <span id="powerEffectText">0.50</span></label><input id="powerEffect" type="range" min="0.05" max="1.50" step="0.05" value="0.50"></div>
+            <div class="control-row"><label for="powerN">Tamaño muestral n <span id="powerNText">40</span></label><input id="powerN" type="range" min="10" max="250" step="5" value="40"></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><b>Error tipo I</b><span id="alphaMetric">-</span></div>
+            <div class="metric"><b>Error tipo II</b><span id="betaMetric">-</span></div>
+            <div class="metric"><b>Poder</b><span id="powerMetric">-</span></div>
+          </div>
+        </article>
+        <article class="panel">
+          <h3 class="anchored">H0, H1 y región de rechazo</h3>
+          <svg class="chart wide-chart" id="powerPlot" role="img" aria-label="Curvas nula y alternativa con poder"></svg>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="casos">
+      <div class="module-title"><span>07</span><h2 class="anchored">Casos Interpretativos</h2></div>
+      <p class="module-intro">Estas preguntas son análogas al taller de ejercicios del curso: exigen elegir método, revisar supuestos y escribir una conclusión sobria.</p>
+      <div class="case-pack">
+        <article class="quiz-card" data-hyp-answer="b" data-ok="Correcto: el problema no es solo el p-valor, sino la conclusión causal sin diseño causal." data-hint="Un resultado significativo en un estudio observacional puede tener confusión o sesgo de selección.">
+          <p class="question">Una encuesta encuentra que vivir cerca de parques se asocia con mayor bienestar (p&lt;0.01) y concluye que construir parques causará bienestar.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Conclusión causal justificada.</button><button class="choice-button" data-choice="b">Evidencia de asociación, causalidad no garantizada.</button><button class="choice-button" data-choice="c">Sin evidencia estadística.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="c" data-ok="Bien: dos intervalos que se traslapan no resuelven automáticamente la prueba de diferencia." data-hint="La pregunta correcta contrasta la diferencia entre medias, idealmente con datos y supuestos claros.">
+          <p class="question">Dos tiempos promedio de viaje tienen IC que se traslapan. El informe afirma que no hay diferencia.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Siempre correcto.</button><button class="choice-button" data-choice="b">Debe usarse KS.</button><button class="choice-button" data-choice="c">Hace falta prueba o IC de la diferencia.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="a" data-ok="Correcto: chi-cuadrado detecta asociación entre categorías, no mecanismo causal." data-hint="La prueba no asignó educación al azar ni descartó confusores.">
+          <p class="question">Educación y voto producen chi-cuadrado p=0.03. ¿Qué afirma la prueba?</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Hay evidencia de asociación.</button><button class="choice-button" data-choice="b">Educación causa voto.</button><button class="choice-button" data-choice="c">Las variables son continuas normales.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="b" data-ok="Exacto: con n pequeño y sigma desconocida, se usa t de Student si los supuestos son plausibles." data-hint="La normal Z requiere sigma conocida o una justificación asintótica fuerte.">
+          <p class="question">n=15, sigma desconocida, se quiere contrastar una media. ¿Referencia principal?</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Normal Z siempre.</button><button class="choice-button" data-choice="b">t de Student.</button><button class="choice-button" data-choice="c">Chi-cuadrado de independencia.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="c" data-ok="Correcto: la prueba de varianza con chi-cuadrado asume normalidad poblacional." data-hint="Asimetría fuerte y atípicos pueden distorsionar mucho el contraste de varianza.">
+          <p class="question">Una prueba de varianza se aplica a datos muy asimétricos y con atípicos.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">No importa la forma.</button><button class="choice-button" data-choice="b">La prueba se vuelve causal.</button><button class="choice-button" data-choice="c">Hay que cuestionar el supuesto de normalidad.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+        <article class="quiz-card" data-hyp-answer="a" data-ok="Bien: en eventos raros, accuracy puede ser alta aunque el modelo no detecte bien los casos importantes." data-hint="Para enfermedad rara, mira recall, precision, falsos negativos y costos de error.">
+          <p class="question">Un clasificador de una enfermedad rara tiene accuracy 99%, pero detecta pocos casos reales.</p>
+          <div class="choice-grid"><button class="choice-button" data-choice="a">Accuracy puede ser engañosa.</button><button class="choice-button" data-choice="b">Es perfecto.</button><button class="choice-button" data-choice="c">Eso prueba independencia.</button></div>
+          <div class="feedback">Pendiente.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="module" id="cierre">
+      <div class="module-title"><span>08</span><h2 class="anchored">Checklist Para Responder Casos</h2></div>
+      <ul class="checklist">
+        <li><strong>Pregunta:</strong> ¿cuál es el parámetro, diferencia, asociación o forma que se quiere evaluar?</li>
+        <li><strong>Hipótesis:</strong> escribe H0 como referencia concreta y H1 según la dirección de la pregunta.</li>
+        <li><strong>Prueba:</strong> elige Z, t, chi-cuadrado, F, KS o una alternativa robusta según variable, diseño y supuestos.</li>
+        <li><strong>Gráfica:</strong> ubica el estadístico en su distribución de referencia y sombrea la zona extrema.</li>
+        <li><strong>Interpretación:</strong> habla de evidencia contra H0, no de probabilidad de que H0 sea verdadera.</li>
+        <li><strong>Diseño:</strong> separa significancia estadística, tamaño del efecto, validez externa y causalidad.</li>
+      </ul>
+      <p class="footer-note">Fuentes conceptuales: taller de ejercicios de Estadística 2 y diapositivas Stats - Test.pptx del curso. Todo el cálculo ocurre localmente en el navegador.</p>
+    </section>
+  </main>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<script src="../workshop-data.js"></script>
+<script src="../distributions-engine.js"></script>
+<script src="../taller_hipotesis.js"></script>
+
+
+
+
+</body></html>

@@ -21,6 +21,7 @@ format:
         <div class="site-links">
           <a href="../">Laboratorio Parcial 1</a>
           <a href="../taller_distribuciones/">Taller de distribuciones</a>
+          <a href="../taller_hipotesis/">Taller de hipótesis</a>
         </div>
       </div>
       <aside class="status-panel">

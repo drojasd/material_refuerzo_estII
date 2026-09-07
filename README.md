@@ -9,6 +9,7 @@ URL pública para estudiantes: <https://drojasd.github.io/material_refuerzo_estI
 - `index.qmd`: fuente Quarto del laboratorio.
 - `taller_distribuciones/index.qmd`: taller visual de distribuciones comunes.
 - `taller_estimadores/index.qmd`: taller de estimadores, TLC, intervalos y contraste.
+- `taller_hipotesis/index.qmd`: taller visual de pruebas de hipótesis.
 - `styles.css`: estilos compartidos.
 - `lab.js`: interacciones de autoevaluación y visualización.
 - `distributions-engine.js`: registro común de distribuciones, CDF y simuladores.
@@ -22,6 +23,7 @@ URL pública para estudiantes: <https://drojasd.github.io/material_refuerzo_estI
 - Laboratorio Parcial 1: <https://drojasd.github.io/material_refuerzo_estII/>
 - Taller de distribuciones: <https://drojasd.github.io/material_refuerzo_estII/taller_distribuciones/>
 - Taller de estimadores: <https://drojasd.github.io/material_refuerzo_estII/taller_estimadores/>
+- Taller de hipótesis: <https://drojasd.github.io/material_refuerzo_estII/taller_hipotesis/>
 
 ## Render local
 
