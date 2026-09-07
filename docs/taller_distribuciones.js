@@ -66,24 +66,43 @@
     return dist.domain(params);
   }
 
-  function valuesFor(dist, params) {
+  function comparisonDomainFor(id, dist) {
+    const fixed = {
+      bernoulli: [-0.5, 1.5],
+      binomial: [-0.75, 60.75],
+      poisson: [-0.75, 42.75],
+      uniform_discrete: [0.25, 20.75],
+      geometric: [0.25, 30.75],
+      uniform: [-10.5, 20.5],
+      normal: [-26, 26],
+      exponential: [0, 32],
+      gamma: [0, 90],
+      beta: [0, 1],
+      student_t: [-6, 6],
+      weibull: [0, 34]
+    };
+    if (fixed[id]) return fixed[id];
+    return dist.kind === "continuous" ? dist.domain(dist.defaults) : domainFor(dist, dist.defaults);
+  }
+
+  function valuesFor(dist, params, domainOverride = null) {
     if (dist.kind === "discrete") {
       const xs = dist.xs(params);
       return xs.map((x) => ({ x, y: dist.pmf(x, params), cdf: dist.cdf(x, params) }));
     }
-    const [lo, hi] = domainFor(dist, params);
+    const [lo, hi] = domainOverride || domainFor(dist, params);
     return Array.from({ length: 220 }, (_, i) => {
       const x = lo + (hi - lo) * i / 219;
       return { x, y: dist.pdf(x, params), cdf: clamp(dist.cdf(x, params), 0, 1) };
     });
   }
 
-  function drawDistribution(svg, dist, params, markerX = null) {
+  function drawDistribution(svg, dist, params, markerX = null, domainOverride = null) {
     clear(svg);
     const w = 720, h = 360, pad = 44;
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-    const vals = valuesFor(dist, params);
-    const [lo, hi] = domainFor(dist, params);
+    const vals = valuesFor(dist, params, domainOverride);
+    const [lo, hi] = domainOverride || domainFor(dist, params);
     const maxY = Math.max(...vals.map((d) => d.y), 0.001);
     const sx = (x) => pad + (x - lo) / (hi - lo) * (w - 2 * pad);
     const sy = (y) => h - pad - y / maxY * (h - 2 * pad);
@@ -141,7 +160,7 @@
     const id = document.getElementById("shapeSelect").value;
     const dist = registry[id];
     const params = paramsFor("shape");
-    drawDistribution(document.getElementById("shapePlot"), dist, params);
+    drawDistribution(document.getElementById("shapePlot"), dist, params, null, comparisonDomainFor(id, dist));
     document.getElementById("shapeName").textContent = dist.label;
     document.getElementById("shapeUse").textContent = dist.use;
     document.getElementById("shapeSupport").textContent = dist.supportText;
