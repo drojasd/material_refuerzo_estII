@@ -22,6 +22,7 @@ format:
           <a href="../">Laboratorio Parcial 1</a>
           <a href="../taller_estimadores/">Taller de estimadores</a>
           <a href="../taller_hipotesis/">Taller de hipótesis</a>
+          <a href="../taller_preguntas/">Taller: preguntas y modelos</a>
         </div>
       </div>
       <aside class="status-panel">

@@ -6,6 +6,7 @@ project:
     - taller_distribuciones/index.qmd
     - taller_estimadores/index.qmd
     - taller_hipotesis/index.qmd
+    - taller_preguntas/index.qmd
   resources:
     - lab.js
     - data.js
@@ -14,6 +15,8 @@ project:
     - taller_distribuciones.js
     - taller_estimadores.js
     - taller_hipotesis.js
+    - taller_preguntas.js
+    - plantilla_entrega2.ipynb
     - .nojekyll
 
 website:
@@ -28,6 +31,7 @@ format:
     css:
       - styles.css
       - workshops.css
+      - preguntas.css
     toc: true
     toc-location: right
     embed-resources: false
